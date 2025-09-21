@@ -1,0 +1,20 @@
+# Core
+fastapi==0.117.1
+uvicorn[standard]==0.30.6
+
+# Config & Validation
+pydantic==2.11.9
+pydantic-settings==2.10.1
+python-dotenv==1.1.1
+PyYAML==6.0.2
+
+# Rendering
+pillow==11.3.0
+reportlab==4.4.4
+
+# LLM API
+anthropic==0.68.0
+requests==2.32.5
+
+# Testing
+pytest==8.4.2

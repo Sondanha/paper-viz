@@ -1,0 +1,69 @@
+# 범용 논문 섹션 → 슬롯 & 레이아웃 매핑
+sections:
+  Abstract:
+    aliases: [Summary]
+    slots: [Problem, Approach, Result]
+    layout: flow_horizontal
+
+  Introduction:
+    aliases: [Overview, Motivation, Background]
+    slots: [Problem, Contribution, Approach]
+    layout: flow_horizontal
+
+  Related Work:
+    aliases: [Prior Work, Literature Review]
+    slots: [Comparison]
+    layout: table_layout
+
+  Method:
+    aliases:
+      [
+        Approach,
+        Model,
+        Proposed Method,
+        Architecture,
+        Unified Detection,
+        Model Architecture,
+        Parameter Attention,
+        Sqrt D Trick,
+      ]
+    slots: [Approach, Details]
+    layout: bullet_diagram
+
+  Experiments:
+    aliases: [Evaluation, Experimental Setup, Implementation Details]
+    slots: [Dataset, Result, Comparison]
+    layout: split_layout
+
+  Results:
+    aliases:
+      [
+        Findings,
+        Analysis,
+        Outcomes,
+        Comparison to Other Detection Systems,
+        Real-Time Detection In The Wild,
+        Visualizations,
+      ]
+    slots: [Result, Comparison]
+    layout: split_layout
+
+  Discussion:
+    aliases: [Analysis, Insights, Why Self Attention]
+    slots: [Limitation, Insight]
+    layout: warning_bullet
+
+  Conclusion:
+    aliases: [Summary, Closing Remarks]
+    slots: [Contribution, Limitation, FutureWork]
+    layout: composite_layout
+
+  Future Work:
+    aliases: [Outlook, Future Directions]
+    slots: [FutureWork]
+    layout: timeline
+
+# 기본값 (섹션 이름이 매핑되지 않을 때)
+default:
+  slots: [Approach, Result]
+  layout: bullet_layout

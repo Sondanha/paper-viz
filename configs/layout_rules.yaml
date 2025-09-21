@@ -1,0 +1,170 @@
+layouts:
+  bullet_layout:
+    description: "세로 Step 구조 (카테고리 + 내용, 아래로 화살표 연결)"
+    slots:
+      - key: Step1
+        desc: "첫 번째 단계 (문제점, 배경 등)"
+      - key: Step2
+        desc: "두 번째 단계 (아이디어, 접근 등)"
+      - key: Step3
+        desc: "세 번째 단계 (해결방안, 결과 등)"
+    visual:
+      background: "연노랑 (#FFFDF0)"
+      box: "흰색 박스 + 연노랑 테두리"
+      connector: "⬇️ 화살표"
+    example: |
+      {
+        "layout": "bullet_layout",
+        "slide_title": "YOLO의 핵심 아이디어",
+        "slots": {
+          "Step1": "작은 객체 탐지에 취약",
+          "Step2": "End-to-End 구조로 학습",
+          "Step3": "하나의 CNN으로 동시에 예측"
+        }
+      }
+
+  flow_horizontal:
+    description: "좌→우 흐름 다이어그램"
+    slots:
+      - key: Problem
+        desc: "해결하려는 문제"
+      - key: Approach
+        desc: "접근 방법"
+      - key: Result
+        desc: "얻은 성과"
+    visual:
+      background: "밝은 흰색"
+      box: "둥근 사각형, 파란 계열"
+      connector: "→ 화살표"
+    example: |
+      {
+        "layout": "flow_horizontal",
+        "slide_title": "문제 → 접근 → 결과",
+        "slots": {
+          "Problem": "데이터 부족",
+          "Approach": "사전학습으로 극복",
+          "Result": "성능 20% 향상"
+        }
+      }
+
+  table_layout:
+    description: "행렬 비교 테이블 (모델/성능 비교)"
+    slots:
+      - key: Comparison
+        desc: "비교 항목 리스트 (2차원 배열)"
+    visual:
+      background: "밝은 회색"
+      table: "격자 선 + 헤더 강조"
+    example: |
+      {
+        "layout": "table_layout",
+        "slide_title": "성능 비교",
+        "slots": {
+          "Comparison": [
+            ["모델", "정확도"],
+            ["YOLO", "90%"],
+            ["Fast R-CNN", "85%"]
+          ]
+        }
+      }
+
+  split_layout:
+    description: "좌/우 분할 (비교용)"
+    slots:
+      - key: Left
+        desc: "왼쪽 텍스트 블록"
+      - key: Right
+        desc: "오른쪽 텍스트 블록"
+    visual:
+      background: "흰색"
+      box_left: "파란 박스"
+      box_right: "주황 박스"
+    example: |
+      {
+        "layout": "split_layout",
+        "slide_title": "실험 데이터셋 vs 결과",
+        "slots": {
+          "Left": "COCO 2014 데이터셋",
+          "Right": "YOLO: mAP 63.4%"
+        }
+      }
+
+  bullet_diagram:
+    description: "불릿 포인트 + 다이어그램"
+    slots:
+      - key: Points
+        desc: "불릿 포인트 리스트"
+      - key: Diagram
+        desc: "간단한 도형/구조 설명"
+    visual:
+      background: "연회색"
+      diagram: "Graphviz or 박스-화살표 다이어그램"
+    example: |
+      {
+        "layout": "bullet_diagram",
+        "slide_title": "모델 구조 개요",
+        "slots": {
+          "Points": ["빠름", "단순", "정확"],
+          "Diagram": "입력 → CNN → 출력"
+        }
+      }
+
+  warning_bullet:
+    description: "⚠ 주의/제한점 강조"
+    slots:
+      - key: Limitation
+        desc: "제한 사항"
+      - key: Insight
+        desc: "통찰/주의사항"
+    visual:
+      background: "연분홍 (#FFF5F5)"
+      icon: "⚠ 빨간 삼각형"
+    example: |
+      {
+        "layout": "warning_bullet",
+        "slide_title": "한계점 및 주의사항",
+        "slots": {
+          "Limitation": "작은 객체 검출 취약",
+          "Insight": "더 큰 데이터셋 필요"
+        }
+      }
+
+  composite_layout:
+    description: "여러 개 블록을 병렬 배치"
+    slots:
+      - key: Contribution
+        desc: "기여 요약"
+      - key: Limitation
+        desc: "제한점 요약"
+      - key: FutureWork
+        desc: "향후 연구"
+    visual:
+      background: "밝은 흰색"
+      boxes: "3개 병렬 블록 (좌→우)"
+    example: |
+      {
+        "layout": "composite_layout",
+        "slide_title": "결론 요약",
+        "slots": {
+          "Contribution": "End-to-End 객체 탐지",
+          "Limitation": "작은 객체 탐지 취약",
+          "FutureWork": "대규모 실험 예정"
+        }
+      }
+
+  timeline:
+    description: "시간 흐름 타임라인"
+    slots:
+      - key: FutureWork
+        desc: "향후 계획 단계 (리스트)"
+    visual:
+      background: "흰색"
+      timeline: "가로축 위에 단계 점"
+    example: |
+      {
+        "layout": "timeline",
+        "slide_title": "향후 연구 계획",
+        "slots": {
+          "FutureWork": ["단계1: 데이터 수집", "단계2: 학습", "단계3: 배포"]
+        }
+      }

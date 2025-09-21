@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+*.so
+*.egg-info/
+*.log
+
+# Virtual environments
+.venv/
+env/
+venv/
+ENV/
+.venv.bak/
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Output
+tests/output/
+data/
+*.pdf
+*.png
+
+# Config
+.env
