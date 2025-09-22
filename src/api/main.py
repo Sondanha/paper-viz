@@ -1,7 +1,7 @@
 # src\api\main.py
 
 from fastapi import FastAPI
-from src.api import health, viz
+from src.api import health, viz, debug
 
 app = FastAPI(
     title="Viz API",
@@ -12,3 +12,4 @@ app = FastAPI(
 # 라우트 등록
 app.include_router(health.router)
 app.include_router(viz.router)
+app.include_router(debug.router)
