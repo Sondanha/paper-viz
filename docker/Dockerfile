@@ -21,4 +21,4 @@ COPY . .
 
 # FastAPI 실행 (uvicorn)
 EXPOSE 8010
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8010"]
+CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8010"]
