@@ -4,6 +4,7 @@ import json, re
 import yaml
 from pathlib import Path
 from src.services.llm_client import call_claude
+from src.config.settings import settings
 
 def load_yaml(path):
     with open(path, "r", encoding="utf-8") as f:
@@ -204,8 +205,6 @@ def build_prompt(section_title: str, section_text: str, mapping: dict):
 """
     return prompt.strip()
 
-
-
 def clean_diagram_content(content):
     if not content:
         return []
@@ -239,7 +238,6 @@ def clean_diagram_content(content):
 
     return []
 
-
 def generate_section_content(section: dict, mapping: dict):
     title = section.get("title", "")
     text = section.get("text", "")
@@ -252,7 +250,7 @@ def generate_section_content(section: dict, mapping: dict):
     cleaned_response = re.sub(r"^```(?:json)?", "", raw_response.strip(), flags=re.MULTILINE)
     cleaned_response = re.sub(r"```$", "", cleaned_response.strip(), flags=re.MULTILINE)
 
-    debug_dir = Path("tests/output/_debug")
+    debug_dir = Path(settings.debug_dir)
     debug_dir.mkdir(parents=True, exist_ok=True)
     sec_title = title.replace(" ", "_")
 
@@ -289,5 +287,3 @@ def generate_section_content(section: dict, mapping: dict):
         "slots": clean_slots,
         "raw_response": raw_response,
     }
-
-

@@ -1,3 +1,5 @@
+# src/core/pipeline.py
+
 from pathlib import Path
 import re
 import base64
@@ -5,6 +7,7 @@ import base64
 from src.core import fetch_arxiv, preprocess, prompt_builder
 from src.config.section_mapper import load_section_mapping, map_section
 from src.renderer.templates import render_section
+from src.config.settings import settings   
 
 
 def sanitize_filename(name: str) -> str:
@@ -12,8 +15,10 @@ def sanitize_filename(name: str) -> str:
     return re.sub(r'[^0-9a-zA-Z가-힣_]+', '_', name).strip("_")
 
 
-def run_pipeline(arxiv_id: str, out_dir: str = "/tmp"):
-    paper_dir = Path(out_dir) / arxiv_id
+def run_pipeline(arxiv_id: str, out_dir: str | None = None):
+    # ✅ 환경변수에서 기본 출력 경로 가져오기
+    base_dir = Path(out_dir or settings.debug_dir)
+    paper_dir = base_dir / arxiv_id
 
     # 이미 생성된 캐시 있으면 그대로 재사용
     if paper_dir.exists():
@@ -45,7 +50,6 @@ def run_pipeline(arxiv_id: str, out_dir: str = "/tmp"):
 
     results = []
     for sec in sections:
-        # (a) 매핑
         mapped = map_section(sec["title"], mapping_rules)
         sec_info = {
             "order": sec["order"],
@@ -55,18 +59,14 @@ def run_pipeline(arxiv_id: str, out_dir: str = "/tmp"):
             "slots": mapped["slots"],
         }
 
-        # (b) LLM 호출
         structured = prompt_builder.generate_section_content(sec_info, mapped)
 
-        # (c) 파일명
         safe_title = sanitize_filename(sec["title"])
         filename = f"{sec['order']}_{safe_title}.png"
         out_path = paper_dir / filename
 
-        # (d) 렌더링
         render_section(structured, out_path)
 
-        # (e) base64 변환
         with open(out_path, "rb") as f:
             encoded = base64.b64encode(f.read()).decode("utf-8")
 
