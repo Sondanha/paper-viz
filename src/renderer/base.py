@@ -37,8 +37,43 @@ def load_font(size=24):
             return ImageFont.truetype(path, size)
     return ImageFont.load_default()
 
-def wrap_text(draw: ImageDraw.ImageDraw, text: str, font, max_width: int):
-    """텍스트 줄바꿈 처리 (Pillow textbbox 사용)"""
+
+def normalize_slots(data):
+    """
+    슬롯 데이터를 리스트 형태로 정규화.
+    - 문자열이면 줄 단위 분할
+    - 리스트면 그대로 flatten
+    - 단, "End-to-End" 같은 단어는 분리하지 않음
+    """
+    if isinstance(data, str):
+        # 줄 단위 split
+        lines = [line.strip() for line in data.split("\n") if line.strip()]
+        # 불릿 처리: "- " 또는 "* " 로 시작하는 경우만 제거
+        cleaned = []
+        for line in lines:
+            if line.startswith("- "):
+                cleaned.append(line[2:].strip())
+            elif line.startswith("* "):
+                cleaned.append(line[2:].strip())
+            else:
+                cleaned.append(line)
+        return cleaned
+
+    elif isinstance(data, list):
+        out = []
+        for x in data:
+            out.extend(normalize_slots(x))
+        return out
+
+    return []
+
+
+
+def wrap_text(draw: ImageDraw.ImageDraw, text: str, font, max_width: int, line_spacing: int = 14):
+    """텍스트 줄바꿈 처리
+    - normalize_slots에서 1차 분리된 문자열이 들어옴
+    - 여전히 폭 초과 시 줄바꿈
+    """
     words = str(text).split()
     lines, line = [], ""
 
@@ -55,19 +90,11 @@ def wrap_text(draw: ImageDraw.ImageDraw, text: str, font, max_width: int):
             line = word
     if line:
         lines.append(line)
+
+    # 각 줄 반환 (줄간격은 draw 단계에서 활용)
     return lines
 
-def normalize_slots(slots, min_len=1):
-    """dict → list 변환 + 최소 길이 보장"""
-    if isinstance(slots, dict):
-        values = list(slots.values())
-    elif isinstance(slots, list):
-        values = slots
-    else:
-        values = []
-    while len(values) < min_len:
-        values.append("(내용 없음)")
-    return values
+
 
 def draw_title_bar(draw, width, title, title_font, bar_height=80):
     """상단 타이틀 바 (노란색 계열)"""
@@ -75,6 +102,7 @@ def draw_title_bar(draw, width, title, title_font, bar_height=80):
     bbox = draw.textbbox((0, 0), title, font=title_font)
     text_width = bbox[2] - bbox[0]
     draw.text(((width - text_width) // 2, 20), title, font=title_font, fill=COLORS["title_text"])
+
 
 def draw_content_box(draw, width, height, bar_height=80, margin=40):
     """본문 영역 박스 (흰색 박스 + 연노랑 테두리)"""

@@ -1,0 +1,33 @@
+# Python 캐시/가상환경
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+.venv/
+env/
+venv/
+
+# VCS
+.git
+.gitignore
+
+# 테스트/로컬 실행 산출물
+tests/
+*.log
+*.out
+*.tmp
+*.ipynb
+notebooks/
+data/
+output/
+tests/output/
+
+# OS/IDE
+.DS_Store
+.idea/
+.vscode/
+
+# Docker 관련
+docker-compose.yml

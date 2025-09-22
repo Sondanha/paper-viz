@@ -2,17 +2,38 @@
 sections:
   Abstract:
     aliases: [Summary]
-    slots: [Problem, Approach, Result]
+    slots:
+      - key: Problem
+        subtitle: "문제 정의"
+        type: text
+      - key: Approach
+        subtitle: "접근 방법"
+        type: text
+      - key: Result
+        subtitle: "핵심 성과"
+        type: text
     layout: flow_horizontal
 
   Introduction:
     aliases: [Overview, Motivation, Background]
-    slots: [Problem, Contribution, Approach]
+    slots:
+      - key: Problem
+        subtitle: "배경 / 문제 인식"
+        type: text
+      - key: Contribution
+        subtitle: "논문의 기여"
+        type: text
+      - key: Approach
+        subtitle: "핵심 접근"
+        type: diagram
     layout: flow_horizontal
 
   Related Work:
     aliases: [Prior Work, Literature Review]
-    slots: [Comparison]
+    slots:
+      - key: Comparison
+        subtitle: "선행 연구 비교"
+        type: table
     layout: table_layout
 
   Method:
@@ -27,13 +48,38 @@ sections:
         Parameter Attention,
         Sqrt D Trick,
       ]
-    slots: [Approach, Details]
+    slots:
+      - key: Points
+        subtitle: "핵심 아이디어"
+        type: text
+      - key: Diagram
+        subtitle: "모델 구조"
+        type: diagram
+      - key: Details
+        subtitle: "세부 설명"
+        type: text
     layout: bullet_diagram
 
   Experiments:
-    aliases: [Evaluation, Experimental Setup, Implementation Details]
-    slots: [Dataset, Result, Comparison]
-    layout: split_layout
+    aliases:
+      [
+        Evaluation,
+        Experimental Setup,
+        Experimental Results,
+        Error Analysis,
+        Implementation Details,
+      ]
+    slots:
+      - key: Dataset
+        subtitle: "데이터셋"
+        type: text
+      - key: Result
+        subtitle: "실험 결과"
+        type: text
+      - key: Analysis
+        subtitle: "분석"
+        type: text
+    layout: composite_layout
 
   Results:
     aliases:
@@ -42,28 +88,71 @@ sections:
         Analysis,
         Outcomes,
         Comparison to Other Detection Systems,
-        Real-Time Detection In The Wild,
         Visualizations,
       ]
-    slots: [Result, Comparison]
+    slots:
+      - key: Result
+        subtitle: "주요 결과"
+        type: text
+      - key: Comparison
+        subtitle: "타 방법과 비교"
+        type: diagram
     layout: split_layout
+
+  Real-Time Detection:
+    aliases: [Real-Time Detection In The Wild]
+    slots:
+      - key: Problem
+        subtitle: "실시간 탐지 과제"
+        type: text
+      - key: Approach
+        subtitle: "실험 접근"
+        type: text
+      - key: Result
+        subtitle: "성과"
+        type: text
+    layout: flow_horizontal
 
   Discussion:
     aliases: [Analysis, Insights, Why Self Attention]
-    slots: [Limitation, Insight]
+    slots:
+      - key: Limitation
+        subtitle: "한계점"
+        type: text
+      - key: Insight
+        subtitle: "통찰 / 시사점"
+        type: text
     layout: warning_bullet
 
   Conclusion:
     aliases: [Summary, Closing Remarks]
-    slots: [Contribution, Limitation, FutureWork]
+    slots:
+      - key: Contribution
+        subtitle: "연구 기여"
+        type: text
+      - key: Limitation
+        subtitle: "제한 사항"
+        type: text
+      - key: FutureWork
+        subtitle: "향후 연구"
+        type: text
     layout: composite_layout
 
   Future Work:
     aliases: [Outlook, Future Directions]
-    slots: [FutureWork]
+    slots:
+      - key: FutureWork
+        subtitle: "단계별 계획"
+        type: timeline
     layout: timeline
 
 # 기본값 (섹션 이름이 매핑되지 않을 때)
 default:
-  slots: [Approach, Result]
+  slots:
+    - key: Approach
+      subtitle: "접근 방법"
+      type: text
+    - key: Result
+      subtitle: "핵심 결과"
+      type: text
   layout: bullet_layout

@@ -7,6 +7,7 @@ from .split import render_split_layout
 from .composite import render_composite_layout
 from .warning_bullet import render_warning_bullet
 from .timeline import render_timeline
+from .bullet_diagram import render_bullet_diagram   # 이거 추가
 
 LAYOUT_RENDERERS = {
     # 기본 불릿 (세로 step 구조)
@@ -30,7 +31,11 @@ LAYOUT_RENDERERS = {
 
     # 타임라인
     "timeline": render_timeline,
+
+    # 불릿 + 다이어그램
+    "bullet_diagram": render_bullet_diagram,   # 이거 추가
 }
+
 
 
 def render_section(section, out_path):

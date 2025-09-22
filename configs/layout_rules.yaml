@@ -3,11 +3,14 @@ layouts:
     description: "세로 Step 구조 (카테고리 + 내용, 아래로 화살표 연결)"
     slots:
       - key: Step1
-        desc: "첫 번째 단계 (문제점, 배경 등)"
+        subtitle: "첫 번째 단계"
+        type: text
       - key: Step2
-        desc: "두 번째 단계 (아이디어, 접근 등)"
+        subtitle: "두 번째 단계"
+        type: text
       - key: Step3
-        desc: "세 번째 단계 (해결방안, 결과 등)"
+        subtitle: "세 번째 단계"
+        type: text
     visual:
       background: "연노랑 (#FFFDF0)"
       box: "흰색 박스 + 연노랑 테두리"
@@ -15,11 +18,11 @@ layouts:
     example: |
       {
         "layout": "bullet_layout",
-        "slide_title": "YOLO의 핵심 아이디어",
+        "slide_title": "작은 객체 탐지 한계를 단일 CNN으로 해결",
         "slots": {
-          "Step1": "작은 객체 탐지에 취약",
-          "Step2": "End-to-End 구조로 학습",
-          "Step3": "하나의 CNN으로 동시에 예측"
+          "Step1": { "subtitle": "문제", "content": ["작은 객체 탐지에 취약"] },
+          "Step2": { "subtitle": "아이디어", "content": ["End-to-End 구조로 학습"] },
+          "Step3": { "subtitle": "해결", "content": ["하나의 CNN으로 동시에 예측"] }
         }
       }
 
@@ -27,11 +30,14 @@ layouts:
     description: "좌→우 흐름 다이어그램"
     slots:
       - key: Problem
-        desc: "해결하려는 문제"
+        subtitle: "문제"
+        type: text
       - key: Approach
-        desc: "접근 방법"
+        subtitle: "접근"
+        type: text
       - key: Result
-        desc: "얻은 성과"
+        subtitle: "성과"
+        type: text
     visual:
       background: "밝은 흰색"
       box: "둥근 사각형, 파란 계열"
@@ -39,11 +45,11 @@ layouts:
     example: |
       {
         "layout": "flow_horizontal",
-        "slide_title": "문제 → 접근 → 결과",
+        "slide_title": "데이터 부족 문제를 사전학습으로 극복",
         "slots": {
-          "Problem": "데이터 부족",
-          "Approach": "사전학습으로 극복",
-          "Result": "성능 20% 향상"
+          "Problem": { "subtitle": "문제", "content": ["데이터 부족"] },
+          "Approach": { "subtitle": "접근", "content": ["사전학습 활용"] },
+          "Result": { "subtitle": "성과", "content": ["성능 20% 향상"] }
         }
       }
 
@@ -51,20 +57,21 @@ layouts:
     description: "행렬 비교 테이블 (모델/성능 비교)"
     slots:
       - key: Comparison
-        desc: "비교 항목 리스트 (2차원 배열)"
+        subtitle: "성능 비교"
+        type: table
     visual:
       background: "밝은 회색"
       table: "격자 선 + 헤더 강조"
     example: |
       {
         "layout": "table_layout",
-        "slide_title": "성능 비교",
+        "slide_title": "YOLO와 R-CNN 계열 성능 비교",
         "slots": {
-          "Comparison": [
+          "Comparison": { "subtitle": "비교", "content": [
             ["모델", "정확도"],
             ["YOLO", "90%"],
             ["Fast R-CNN", "85%"]
-          ]
+          ]}
         }
       }
 
@@ -72,9 +79,11 @@ layouts:
     description: "좌/우 분할 (비교용)"
     slots:
       - key: Left
-        desc: "왼쪽 텍스트 블록"
+        subtitle: "왼쪽 영역"
+        type: text
       - key: Right
-        desc: "오른쪽 텍스트 블록"
+        subtitle: "오른쪽 영역"
+        type: text
     visual:
       background: "흰색"
       box_left: "파란 박스"
@@ -82,10 +91,10 @@ layouts:
     example: |
       {
         "layout": "split_layout",
-        "slide_title": "실험 데이터셋 vs 결과",
+        "slide_title": "실험 데이터셋과 YOLO 결과 비교",
         "slots": {
-          "Left": "COCO 2014 데이터셋",
-          "Right": "YOLO: mAP 63.4%"
+          "Left": { "subtitle": "데이터셋", "content": ["COCO 2014 데이터셋"] },
+          "Right": { "subtitle": "결과", "content": ["YOLO: mAP 63.4%"] }
         }
       }
 
@@ -93,19 +102,97 @@ layouts:
     description: "불릿 포인트 + 다이어그램"
     slots:
       - key: Points
-        desc: "불릿 포인트 리스트"
+        subtitle: "핵심 포인트"
+        type: text
       - key: Diagram
-        desc: "간단한 도형/구조 설명"
+        subtitle: "구조 다이어그램"
+        type: diagram
     visual:
       background: "연회색"
-      diagram: "Graphviz or 박스-화살표 다이어그램"
+      diagram: "Graphviz dot 렌더링 결과"
     example: |
+      # 예시 1: Transformer 구조
       {
         "layout": "bullet_diagram",
-        "slide_title": "모델 구조 개요",
+        "slide_title": "Transformer Encoder-Decoder",
         "slots": {
-          "Points": ["빠름", "단순", "정확"],
-          "Diagram": "입력 → CNN → 출력"
+          "Points": {
+            "subtitle": "핵심 특징",
+            "content": [
+              "Self-Attention으로 문맥 전역 정보를 동시에 처리한다.",
+              "멀티헤드 어텐션과 피드포워드 계층이 반복적으로 쌓여 표현력을 확장한다.",
+              "인코더-디코더 구조로 입력 문장을 압축하고, 새로운 문장을 점진적으로 생성한다."
+            ]
+          },
+          "Diagram": {
+            "subtitle": "구조",
+            "content": [
+              "digraph {",
+              "  rankdir=LR;",
+              "  Input -> Embedding -> Encoder1 -> Encoder2 -> Encoder3;",
+              "  Encoder3 -> Decoder1 -> Decoder2 -> Decoder3 -> Output;",
+              "  Decoder1 -> SelfAttention -> Decoder2;",
+              "  Encoder3 -> CrossAttention -> Decoder2;",
+              "}"
+            ]
+          }
+        }
+      }
+
+      # 예시 2: GAN 구조
+      {
+        "layout": "bullet_diagram",
+        "slide_title": "GAN Framework",
+        "slots": {
+          "Points": {
+            "subtitle": "핵심 아이디어",
+            "content": [
+              "Generator는 무작위 노이즈를 실제와 유사한 샘플로 변환한다.",
+              "Discriminator는 진짜/가짜 여부를 판별하며 Generator를 압박한다.",
+              "상호 경쟁 학습을 통해 점점 더 정교하고 사실적인 데이터가 생성된다."
+            ]
+          },
+          "Diagram": {
+            "subtitle": "상호작용",
+            "content": [
+              "digraph {",
+              "  rankdir=LR;",
+              "  Noise -> Generator -> FakeData;",
+              "  RealData -> Discriminator;",
+              "  FakeData -> Discriminator;",
+              "  Discriminator -> Generator [style=dashed,label=\"feedback\"];",
+              "}"
+            ]
+          }
+        }
+      }
+
+      # 예시 3: 분산 학습 시스템
+      {
+        "layout": "bullet_diagram",
+        "slide_title": "분산 학습 시스템",
+        "slots": {
+          "Points": {
+            "subtitle": "구조적 특징",
+            "content": [
+              "데이터 병렬화를 통해 대규모 데이터셋을 동시에 학습한다.",
+              "각 워커 노드가 파라미터 서버와 통신하며 가중치를 동기화한다.",
+              "확장 가능한 클러스터 구조로 다양한 규모의 실험 환경을 지원한다."
+            ]
+          },
+          "Diagram": {
+            "subtitle": "클러스터 구조",
+            "content": [
+              "digraph {",
+              "  rankdir=TB;",
+              "  subgraph cluster_master { label=\"Master\"; Scheduler; ParamServer; }",
+              "  subgraph cluster_workers { label=\"Workers\"; Worker1; Worker2; Worker3; Worker4; }",
+              "  Scheduler -> Worker1; Scheduler -> Worker2; Scheduler -> Worker3; Scheduler -> Worker4;",
+              "  Worker1 -> ParamServer; Worker2 -> ParamServer; Worker3 -> ParamServer; Worker4 -> ParamServer;",
+              "  ParamServer -> Scheduler;",
+              "}"
+            ]
+          }
         }
       }
 
@@ -113,19 +200,21 @@ layouts:
     description: "⚠ 주의/제한점 강조"
     slots:
       - key: Limitation
-        desc: "제한 사항"
+        subtitle: "한계"
+        type: text
       - key: Insight
-        desc: "통찰/주의사항"
+        subtitle: "통찰"
+        type: text
     visual:
       background: "연분홍 (#FFF5F5)"
       icon: "⚠ 빨간 삼각형"
     example: |
       {
         "layout": "warning_bullet",
-        "slide_title": "한계점 및 주의사항",
+        "slide_title": "YOLO의 한계와 주의사항",
         "slots": {
-          "Limitation": "작은 객체 검출 취약",
-          "Insight": "더 큰 데이터셋 필요"
+          "Limitation": { "subtitle": "한계", "content": ["작은 객체 탐지 취약"] },
+          "Insight": { "subtitle": "주의", "content": ["더 큰 데이터셋 필요"] }
         }
       }
 
@@ -133,22 +222,25 @@ layouts:
     description: "여러 개 블록을 병렬 배치"
     slots:
       - key: Contribution
-        desc: "기여 요약"
+        subtitle: "기여"
+        type: text
       - key: Limitation
-        desc: "제한점 요약"
+        subtitle: "한계"
+        type: text
       - key: FutureWork
-        desc: "향후 연구"
+        subtitle: "향후 연구"
+        type: text
     visual:
       background: "밝은 흰색"
       boxes: "3개 병렬 블록 (좌→우)"
     example: |
       {
         "layout": "composite_layout",
-        "slide_title": "결론 요약",
+        "slide_title": "YOLO 기여와 한계, 그리고 미래 방향",
         "slots": {
-          "Contribution": "End-to-End 객체 탐지",
-          "Limitation": "작은 객체 탐지 취약",
-          "FutureWork": "대규모 실험 예정"
+          "Contribution": { "subtitle": "기여", "content": ["End-to-End 객체 탐지"] },
+          "Limitation": { "subtitle": "한계", "content": ["작은 객체 탐지 취약"] },
+          "FutureWork": { "subtitle": "연구", "content": ["대규모 실험 예정"] }
         }
       }
 
@@ -156,15 +248,20 @@ layouts:
     description: "시간 흐름 타임라인"
     slots:
       - key: FutureWork
-        desc: "향후 계획 단계 (리스트)"
+        subtitle: "단계"
+        type: timeline
     visual:
       background: "흰색"
       timeline: "가로축 위에 단계 점"
     example: |
       {
         "layout": "timeline",
-        "slide_title": "향후 연구 계획",
+        "slide_title": "연구 진행 단계별 계획",
         "slots": {
-          "FutureWork": ["단계1: 데이터 수집", "단계2: 학습", "단계3: 배포"]
+          "FutureWork": { "subtitle": "단계", "content": [
+            "단계1: 데이터 수집",
+            "단계2: 학습",
+            "단계3: 배포"
+          ]}
         }
       }
