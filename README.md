@@ -1,6 +1,7 @@
 # paper-viz
 
-논문 PDF에서 섹션을 뽑아 **LLM으로 슬라이드 콘텐츠(JSON)** 를 생성하고, **Renderer(Pillow/Graphviz)** 로 발표용 PNG를 만든다.  
+논문 PDF에서 섹션을 뽑아 **LLM으로 슬라이드 콘텐츠(JSON)** 를 생성하고,  
+**Renderer(Pillow/Graphviz)** 로 발표용 PNG를 만든다.  
 최종 산출물은 섹션 단위의 가로형 슬라이드 이미지 묶음.
 
 ---
@@ -12,9 +13,9 @@
 ```bash
 docker build -t paper-viz .
 docker run -d -p 8010:8010 --env-file .env paper-viz
-```
+````
 
-### 2. API 호출
+### 2. 슬라이드 생성 요청
 
 예: YOLOv1 논문(`1506.02640`) 변환 요청
 
@@ -28,33 +29,91 @@ curl -X POST http://localhost:8010/api/viz-api/generate/1506.02640
 {
   "arxiv_id": "1506.02640",
   "pdf_size": 543210,
-  "output_dir": "tests/output/1506.02640",
   "sections": [
     {
-      "order": 1,
+      "order": 0,
       "title": "Introduction",
       "layout": "flow_horizontal",
-      "file": "tests/output/1506.02640/1_Introduction.png"
+      "slide_title": "YOLO의 핵심 개념",
+      "preview": "iVBORw0KGgoAAAANSUhEUgAA...",   // Base64 PNG 미리보기
+      "download_url": "/api/viz-api/download/1506.02640/0_Introduction.png"
     }
   ]
 }
 ```
 
-### 3. 결과 확인
+### 3. 결과 PNG 다운로드
 
-- PNG 파일: `tests/output/{arxiv_id}/{order}_{section}.png`
-- 섹션별 JSON: `tests/output/_debug/{section}_parsed.json`
+응답의 `download_url`을 호출:
+
+```bash
+curl -O http://localhost:8010/api/viz-api/download/1506.02640/0_Introduction.png
+```
+
+* 파일 저장 후, 서버에서는 해당 PNG를 즉시 삭제함
+* 두 번째 요청 시 `"File not found"` 응답 확인 가능
+
+---
+## 시스템 구조
+
+```mermaid
+flowchart TD
+    subgraph Client[사용자]
+        C1[POST /api/viz-api/generate/:arxiv_id]
+        C2[GET /api/viz-api/download/:arxiv_id/:filename]
+    end
+
+    subgraph FastAPI
+        A1[viz.py Router]
+        A2[pipeline.py]
+        A3[renderer/templates.py]
+        A4[llm_client.py]
+    end
+
+    subgraph Core
+        B1[fetch_arxiv.py - PDF/TEX 다운로드]
+        B2[preprocess.py - 섹션 추출/클리닝]
+        B3[section_mapper.py - 매핑 룰 적용]
+        B4[prompt_builder.py - LLM 프롬프트 생성/파싱]
+    end
+
+    subgraph Services
+        S1[Anthropic Claude API 호출]
+    end
+
+    subgraph Renderer
+        R1[bullet, flow_horizontal 등]
+        R2[bullet_diagram - Graphviz]
+        R3[base.py - 폰트/컬러/유틸]
+    end
+
+    subgraph Storage
+        F1["/tmp/{arxiv_id} - PNG + JSON 캐시"]
+        F2["/tmp/viz_debug - LLM raw/cleaned 결과"]
+    end
+
+    C1 --> A1 --> A2
+    A2 --> B1 --> B2 --> B3 --> B4 --> A4 --> S1
+    A2 --> A3 --> R1 & R2 & R3
+    A3 --> F1
+    F1 --> C2
+    A4 --> F2
+```
+
+
 
 ---
 
 ## 기능 개요
 
-- **전처리**: arXiv에서 PDF/TEX 가져와 섹션 텍스트 추출
-- **매핑**: `configs/section_mapping.yaml`에 따라 섹션→슬롯/레이아웃 결정
-- **LLM**: `configs/layout_rules.yaml` 규칙에 맞춰 `slide_title` + `slots` JSON 생성
-- **렌더링**: 레이아웃별 템플릿으로 발표 스타일 PNG 생성
-- **API 제공**: FastAPI 기반 REST API (`/api/viz-api/generate/{arxiv_id}`)
-- **결과**: `tests/output/{arxiv_id}/{order}_{section}.png`
+* **전처리**: arXiv에서 PDF/TEX 가져와 섹션 텍스트 추출
+* **매핑**: `configs/section_mapping.yaml`에 따라 섹션→슬롯/레이아웃 결정
+* **LLM**: `configs/layout_rules.yaml` 규칙에 맞춰 `slide_title` + `slots` JSON 생성
+* **렌더링**: Pillow/Graphviz 기반 템플릿으로 발표 스타일 PNG 생성
+* **API 제공**: FastAPI 기반 REST API
+
+  * `POST /api/viz-api/generate/{arxiv_id}` → PNG 생성 & 미리보기 + 다운로드 URL 반환
+  * `GET /api/viz-api/download/{arxiv_id}/{filename}.png` → PNG 다운로드 (다운로드 직후 삭제)
 
 ---
 
@@ -74,9 +133,10 @@ src/
     flow_horizontal.py  # flow_horizontal (좌→우 흐름)
     split.py            # split_layout (좌/우 비교)
     table.py            # table_layout (비교 테이블)
-    composite.py        # composite_layout (병렬 블록)
-    warning_bullet.py   # warning_bullet (제한/주의)
-    timeline.py         # timeline (가로 타임라인)
+    composite.py        # composite_layout (3개 병렬)
+    warning_bullet.py   # warning_bullet (주의사항)
+    timeline.py         # timeline (타임라인)
+    bullet_diagram.py   # bullet + diagram 혼합
   services/
     llm_client.py       # Anthropic(Claude) 호출
   config/
@@ -84,7 +144,7 @@ src/
     section_mapper.py   # 섹션명→매핑 로직
   api/
     main.py             # FastAPI 진입점
-    viz.py              # 파이프라인 호출 엔드포인트
+    viz.py              # API 엔드포인트
 configs/
   section_mapping.yaml  # 섹션명→{slots, layout}
   layout_rules.yaml     # 레이아웃 규칙/예시
@@ -97,7 +157,6 @@ tests/
 ## 설치 (개발 환경)
 
 ```bash
-# 가상환경 권장
 python -m venv .venv
 # Windows
 .\.venv\Scripts\activate
@@ -117,6 +176,9 @@ ANTHROPIC_API_KEY=sk-...
 CLAUDE_DEFAULT_MODEL=claude-3-haiku-20240307
 CLAUDE_MAX_TOKENS=4096
 CLAUDE_TEMPERATURE=0.2
+
+# 디버깅용 JSON 저장 위치
+DEBUG_DIR=/tmp/viz_debug
 ```
 
 ---
@@ -129,8 +191,9 @@ uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8010
 
 엔드포인트:
 
-- `GET /health` → 헬스체크
-- `POST /api/viz-api/generate/{arxiv_id}` → PNG 생성 및 메타 반환
+* `GET /healthz` → 헬스체크
+* `POST /api/viz-api/generate/{arxiv_id}` → 슬라이드 생성
+* `GET /api/viz-api/download/{arxiv_id}/{filename}.png` → PNG 다운로드
 
 ---
 
@@ -177,12 +240,17 @@ tests/_debug/*
 
 ---
 
-## 시각화 가이드 (요약)
+## 시각화 가이드
 
-- **bullet_layout**: 세로 step, 박스+화살표
-- **flow_horizontal**: 좌→우 흐름
-- **split_layout**: 좌/우 비교
-- **table_layout**: 성능 비교 테이블
-- **composite_layout**: 3개 병렬 블록
-- **warning_bullet**: 경고 테마
-- **timeline**: 시간 흐름 단계
+* **bullet\_layout**: 세로 step
+* **flow\_horizontal**: 좌→우 흐름
+* **split\_layout**: 좌/우 비교
+* **table\_layout**: 성능 비교
+* **composite\_layout**: 3개 병렬 블록
+* **warning\_bullet**: 경고 테마
+* **timeline**: 시간 흐름 단계
+* **bullet\_diagram**: 불릿 + Graphviz 다이어그램
+
+
+
+
