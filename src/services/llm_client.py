@@ -11,7 +11,7 @@ def call_claude(prompt: str) -> str:
     인메모리로 섹션 단위 텍스트만 주고받음
     """
     response = client.messages.create(
-        model=settings.claude_model,
+        model=settings.claude_model,   
         max_tokens=settings.max_tokens,
         temperature=settings.temperature,
         messages=[{"role": "user", "content": prompt}]
