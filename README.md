@@ -6,7 +6,7 @@ LLM을 통해 슬라이드 JSON을 만들고, Renderer(Pillow/Graphviz)를 이�
 
 <br>
 
-## 🖼️ 최종 결과물 예시
+## 🖼️ Demo Results
 
 | ![](./demo/slide/0_Introduction.png) | ![](./demo/slide/1_Unified_Detection.png)               | ![](./demo/slide/2_Comparison_to_Other_Detection_Systems.png) |
 | ------------------------------------ | ------------------------------------------------------- | ------------------------------------------------------------- |
@@ -14,9 +14,9 @@ LLM을 통해 슬라이드 JSON을 만들고, Renderer(Pillow/Graphviz)를 이�
 
 <br><br>
 
-## 🚀 빠른 시작
+## 🚀 Quick Start
 
-### 1) Docker 빌드/실행
+### 1) Build & Run with Docker
 
 ```bash
 docker build -t paper-viz .
@@ -31,7 +31,7 @@ curl http://localhost:8010/healthz
 
 <br>
 
-### 2) 슬라이드 생성 요청
+### 2) Request Slide Generation
 
 예) YOLOv1 논문(`1506.02640`) 변환:
 
@@ -60,7 +60,7 @@ curl -X POST http://localhost:8010/api/viz-api/generate/1506.02640
 
 <br>
 
-### 3) 결과 PNG 다운로드
+### 3) Download Result PNG
 
 ```bash
 curl -O http://localhost:8010/api/viz-api/download/1506.02640/0_Introduction.png
@@ -70,7 +70,7 @@ curl -O http://localhost:8010/api/viz-api/download/1506.02640/0_Introduction.png
 
 <br><br>
 
-## ✨ 기능 개요
+## ✨ Features
 
 - **전처리**: arXiv PDF/TEX → 섹션 텍스트 추출
 - **매핑**: `configs/section_mapping.yaml` 기반 섹션→슬롯/레이아웃 결정
@@ -84,13 +84,13 @@ curl -O http://localhost:8010/api/viz-api/download/1506.02640/0_Introduction.png
 
 <br><br>
 
-## 🧱 시스템 구조
+## 🧱 System Architecture
 
 ![architecture](./demo/architecture.png)
 
 <br><br>
 
-## 📦 디렉터리 구조
+## 📦 Directory Structure
 
 ```bash
 src/
@@ -127,7 +127,7 @@ tests/
 
 <br><br>
 
-## ⚙️ 설치 및 실행(개발 환경)
+## ⚙️ Installation & Local Run
 
 ```bash
 python -m venv .venv
@@ -144,7 +144,7 @@ uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8010
 
 <br><br>
 
-## 🔐 환경 변수(.env)
+## 🔐 Environment Variables
 
 ```env
 ANTHROPIC_API_KEY=sk-...
@@ -156,7 +156,7 @@ DEBUG_DIR=/tmp/viz_debug
 
 <br><br>
 
-## 🧪 테스트
+## 🧪 Tests
 
 ```bash
 pytest -s tests/test_pipeline_run.py
@@ -164,7 +164,7 @@ pytest -s tests/test_pipeline_run.py
 
 <br><br>
 
-## 📑 API 요약
+## 📑 API Summary
 
 | Method | Path                                              | 설명                           |
 | -----: | ------------------------------------------------- | ------------------------------ |
@@ -174,7 +174,7 @@ pytest -s tests/test_pipeline_run.py
 
 <br><br>
 
-## 🖼️ 시각화 레이아웃 가이드
+## 🖼️ Visualization Layout Guide
 
 - **bullet_layout**: 세로 step
 - **flow_horizontal**: 좌→우 흐름
@@ -184,3 +184,7 @@ pytest -s tests/test_pipeline_run.py
 - **warning_bullet**: 경고 테마
 - **timeline**: 시간 흐름 단계
 - **bullet_diagram**: 불릿 + 다이어그램
+
+```
+
+```
