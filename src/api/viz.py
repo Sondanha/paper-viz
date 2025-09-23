@@ -15,13 +15,16 @@ def generate_zip(arxiv_id: str):
     """
     result = run_pipeline(arxiv_id, out_dir="/tmp")
     out_dir = Path(result["output_dir"])
-    zip_path = out_dir.with_suffix(".zip")
 
-    # zip 파일 생성
-    shutil.make_archive(out_dir, "zip", out_dir)
+    # zip 파일은 /tmp/{arxiv_id}.zip 으로 고정
+    zip_path = out_dir.parent / f"{arxiv_id}.zip"
+
+    # shutil.make_archive는 확장자 없는 경로를 받아야 함
+    shutil.make_archive(str(zip_path.with_suffix("")), "zip", out_dir)
 
     return FileResponse(
         path=zip_path,
         media_type="application/zip",
         filename=f"{arxiv_id}.zip"
     )
+
