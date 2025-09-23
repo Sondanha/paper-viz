@@ -23,6 +23,7 @@ notebooks/
 data/
 output/
 tests/output/
+demo/
 
 # OS/IDE
 .DS_Store

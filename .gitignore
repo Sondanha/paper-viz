@@ -27,8 +27,8 @@ Thumbs.db
 # Output
 tests/output/
 data/
-*.pdf
-*.png
+tests/output/*.pdf
+tests/output/*.png
 
 # Config
 .env
